@@ -1,0 +1,93 @@
+/* Login Motion Animations */
+
+/* Wrapper to hold both the card and the text */
+.login-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 900px;
+    /* Width to accommodate both card and text */
+}
+
+/* The Login Card Animation */
+.login-card {
+    position: relative;
+    z-index: 2;
+    /* Keep above the text */
+    /* Initial state handled by animation */
+    animation: slideLeft 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.5s;
+    /* Delay start slightly */
+}
+
+/* The Animated Text Behind */
+.login-text-reveal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    /* Behind the card */
+    width: 300px;
+    opacity: 0;
+
+    /* Typography */
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-white);
+    text-align: left;
+
+    /* Animation Sequence */
+    animation: revealText 1s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.8s;
+    /* Start after card moves */
+}
+
+/* Continuous Shimmer/Glow on Text */
+.login-text-reveal span {
+    background: linear-gradient(90deg, #ffffff, #ff4d4d, #ffffff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+}
+
+/* Keyframes */
+
+
+
+/* Reveal Text (Move from behind card to right) */
+@keyframes revealText {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateX(0) scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateX(200px) scale(1);
+        /* Move right */
+    }
+}
+
+/* Continuous Shimmer */
+@keyframes shimmer {
+    to {
+        background-position: 200% center;
+    }
+}
+
+/* Responsive: Disable on mobile */
+@media (max-width: 768px) {
+    .login-card {
+        animation: none;
+        transform: none;
+    }
+
+    .login-text-reveal {
+        display: none;
+    }
+}

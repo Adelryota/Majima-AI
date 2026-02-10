@@ -1,0 +1,129 @@
+/* Intro Splash Screen Styles */
+:root {
+    --bg-color: #0a0a0a;
+    --primary-red: #e50914;
+    --text-white: #ffffff;
+    --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color);
+    font-family: var(--font-main);
+    overflow: hidden;
+    /* Prevent scrolling during intro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.intro-container {
+    text-align: center;
+    position: relative;
+    z-index: 10;
+}
+
+/* Main Title Animation */
+.intro-title {
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--text-white);
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    opacity: 0;
+    transform: scale(0.9);
+    animation: titleReveal 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    text-shadow: 0 0 20px rgba(229, 9, 20, 0.5);
+}
+
+.highlight-red {
+    color: var(--primary-red);
+    text-shadow: 0 0 30px rgba(229, 9, 20, 0.8);
+}
+
+/* Subtitle Animation */
+.intro-subtitle {
+    font-size: 1.5rem;
+    color: #cccccc;
+    margin-top: 20px;
+    font-weight: 300;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: subtitleSlideUp 1s ease-out 1.2s forwards;
+    /* Delays start until title is done */
+}
+
+/* Background Particle/Glow Effect (Optional but adds polish) */
+.glow-effect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(229, 9, 20, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    animation: pulseGlow 4s infinite alternate;
+}
+
+/* Animations */
+@keyframes titleReveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(30px);
+        filter: blur(10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
+}
+
+@keyframes subtitleSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseGlow {
+    0% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+/* Exit Transition */
+.fade-out {
+    animation: pageExit 0.8s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+}
+
+@keyframes pageExit {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.1);
+        /* Subtle zoom out */
+        filter: blur(5px);
+    }
+}

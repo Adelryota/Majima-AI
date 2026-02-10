@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ subject_name }} Lectures - Majima AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="user-layout">
+        <header class="user-header">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <img src="{{ url_for('static', filename='images/favicon.png') }}" alt="Logo"
+                    style="width: 40px; height: 40px;">
+                <div>
+                    <h1 style="margin:0; font-size: 1.5rem;">Majima AI</h1>
+                    <small class="text-muted">Welcome, {{ session.username }}</small>
+                </div>
+            </div>
+            <div>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+            </div>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <a href="{{ url_for('summarizer_dashboard') }}" class="btn btn-outline" style="margin-bottom: 20px;">
+            <i class="fa-solid fa-arrow-left"></i> Back to Subjects
+        </a>
+
+        <h1>Lectures for: {{ subject_name }}</h1>
+
+        {% if lectures %}
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <ul style="list-style: none;">
+                {% for lecture in lectures %}
+                <li
+                    style="padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="font-size: 1.1rem;">{{ lecture['title'] }}</strong>
+                        <br>
+                        <small class="text-muted"><i class="fa-regular fa-file-pdf"></i> {{ lecture['original_filename']
+                            }}</small>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <div class="alert success">No lectures have been uploaded for this subject yet.</div>
+        {% endif %}
+    </div>
+</body>
+
+</html>

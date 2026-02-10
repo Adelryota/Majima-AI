@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Majima AI</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/loginText.css') }}">
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --primary-red: #e50914;
+            --primary-red-hover: #b20710;
+            --text-white: #ffffff;
+            --text-muted: #b3b3b3;
+            --border-color: #333;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at top right, #1a0505, #000000);
+            color: var(--text-white);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .split-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Left Side: Login Form */
+        .login-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* Align to end to push content towards center */
+            align-items: flex-end;
+            padding: 40px;
+            /* Add padding to create the gap from center */
+            padding-right: 40px;
+            background-color: transparent;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-white);
+            text-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
+        }
+
+        .login-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i.input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+            z-index: 2;
+        }
+
+        /* Password Toggle Icon */
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            cursor: pointer;
+            z-index: 2;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-red);
+        }
+
+        .form-control {
+            width: 100%;
+            /* Padding: Top Right Bottom Left */
+            /* Right padding increased for eye icon */
+            padding: 14px 45px 14px 45px !important;
+            background-color: rgba(31, 31, 31, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-white);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            backdrop-filter: blur(5px);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            background-color: rgba(42, 42, 42, 0.8);
+        }
+
+        .form-control:focus+i.input-icon {
+            color: var(--primary-red);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-red-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.5);
+        }
+
+        .forgot-password {
+            display: block;
+            text-align: right;
+            margin-top: 15px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: var(--primary-red);
+            text-decoration: underline;
+        }
+
+        /* Admin Toggle */
+        .admin-toggle {
+            margin-top: 30px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: underline;
+        }
+
+        .toggle-btn:hover {
+            color: var(--primary-red);
+        }
+
+        /* Right Side: Branding */
+        .brand-section {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* Align to start to push content towards center */
+            align-items: flex-start;
+            padding: 40px;
+            /* Add padding to create the gap from center */
+            padding-left: 40px;
+            position: relative;
+            overflow: hidden;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .brand-content {
+            text-align: center;
+            z-index: 2;
+            animation: fadeIn 1s ease-out;
+            /* Ensure content is centered relative to itself */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .brand-logo {
+            max-width: 400px;
+            width: 90%;
+            height: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 30px rgba(229, 9, 20, 0.3));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .brand-text {
+            font-size: 1.5rem;
+            color: var(--text-white);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: 10px;
+
+            /* Floating animation synced with logo */
+            animation: float 6s ease-in-out infinite;
+
+            /* Glowing effect */
+            text-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
+            background: linear-gradient(90deg, #fff, #ffcccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .split-container {
+                flex-direction: column-reverse;
+            }
+
+            .brand-section {
+                flex: 0.8;
+                padding: 40px 20px;
+                align-items: center;
+                /* Center on mobile */
+                border-left: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .login-section {
+                flex: 1.2;
+                align-items: center;
+                /* Center on mobile */
+                padding: 40px;
+            }
+
+            .brand-logo {
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Restored Animated Text Background -->
+    <div class="login-text-upward">
+        <span>Login to access our AI</span>
+    </div>
+
+    <div class="split-container">
+        <!-- Left Side: Login Form -->
+        <div class="login-section">
+            <div class="login-wrapper">
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Please enter your details to sign in.</p>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert {{ category }}"
+                    style="font-size: 0.9rem; padding: 10px; margin-bottom: 20px; border-radius: 5px; background: rgba(229, 9, 20, 0.1); border: 1px solid var(--primary-red); color: #ffcccc;">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                <!-- STUDENT LOGIN FORM -->
+                <form id="student-login-form" method="POST" action="{{ url_for('login') }}">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <div class="input-wrapper">
+                            <input type="text" name="username" class="form-control" required
+                                placeholder="Enter your username">
+                            <i class="fa-solid fa-user input-icon"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" name="password" id="student-password" class="form-control" required
+                                placeholder="Enter your password">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <i class="fa-solid fa-eye password-toggle"
+                                onclick="togglePassword('student-password', this)"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-login">
+                        Sign In
+                    </button>
+
+                    <a href="https://wa.me/966509257143?text=  السلام عليكم يا استاذ، لقد نسيت كلمة المرور الخاصة بي لملخص الذكاء الاصطناعي. اسمي و رقمي الجامعي: هنا "
+                        target="_blank" class="forgot-password">
+                        <i class="fa-brands fa-whatsapp"></i> Sign up / Forgot Password?
+                    </a>
+                </form>
+
+                <!-- ADMIN LOGIN FORM (Hidden by default) -->
+                <form id="admin-login-form" method="POST" action="{{ url_for('admin_login_auth') }}"
+                    style="display: none;">
+                    <div class="form-group">
+                        <label style="color: var(--primary-red);">Admin Username</label>
+                        <div class="input-wrapper">
+                            <input type="text" name="username" class="form-control" required
+                                placeholder="Admin username" style="border-color: var(--primary-red);">
+                            <i class="fa-solid fa-user-shield input-icon" style="color: var(--primary-red);"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="color: var(--primary-red);">Admin Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" name="password" id="admin-password" class="form-control" required
+                                placeholder="Admin password" style="border-color: var(--primary-red);">
+                            <i class="fa-solid fa-key input-icon" style="color: var(--primary-red);"></i>
+                            <i class="fa-solid fa-eye password-toggle" onclick="togglePassword('admin-password', this)"
+                                style="color: var(--primary-red);"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-login" style="background-color: #b0060e;">
+                        <i class="fa-solid fa-shield-halved"></i> Admin Login
+                    </button>
+
+                    <!-- Forgot Password for Admin -->
+                    <a href="https://wa.me/966509257143?text=  السلام عليكم، لقد نسيت كلمة المرور الخاصة بي لملخص الذكاء الاصطناعي:  "
+                        target="_blank" class="forgot-password">
+                        <i class="fa-brands fa-whatsapp"></i> Forgot Password?
+                    </a>
+                </form>
+
+                <div class="admin-toggle">
+                    <button type="button" class="toggle-btn" onclick="toggleAdmin()">
+                        <span id="toggle-text">Switch to Admin Login</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Branding -->
+        <div class="brand-section">
+            <div class="brand-content">
+                <img src="{{ url_for('static', filename='images/majima_logo.png') }}" alt="Majima AI Logo"
+                    class="brand-logo">
+                <div class="brand-text">Sign In to Continue</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-dismiss alerts after 3 seconds
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(function () {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function (alert) {
+                    alert.style.transition = 'opacity 0.5s ease';
+                    alert.style.opacity = '0';
+                    setTimeout(function () {
+                        alert.remove();
+                    }, 500);
+                });
+            }, 3000);
+        });
+
+        function toggleAdmin() {
+            const studentForm = document.getElementById('student-login-form');
+            const adminForm = document.getElementById('admin-login-form');
+            const toggleText = document.getElementById('toggle-text');
+
+            if (studentForm.style.display === 'none') {
+                studentForm.style.display = 'block';
+                adminForm.style.display = 'none';
+                toggleText.textContent = "Switch to Admin Login";
+            } else {
+                studentForm.style.display = 'none';
+                adminForm.style.display = 'block';
+                toggleText.textContent = "Back to Student Login";
+            }
+        }
+
+        function togglePassword(inputId, icon) {
+            const passwordInput = document.getElementById(inputId);
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+
+</html>

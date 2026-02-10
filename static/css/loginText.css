@@ -1,0 +1,99 @@
+/* Login Text Animation Styles */
+
+.login-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* Ensure container doesn't block clicks on the card */
+    pointer-events: none;
+}
+
+/* The Login Card */
+.login-card {
+    position: relative;
+    z-index: 10;
+    /* Keep above the text initially */
+    pointer-events: auto;
+    /* Re-enable clicks */
+    /* No movement animation on the card itself, just the scaleIn from original styles */
+}
+
+/* The Animated Text */
+.login-text-upward {
+    position: absolute;
+    top: 50%;
+    /* Start centered vertically */
+    left: 50%;
+    /* Center horizontally relative to container */
+    width: auto;
+    text-align: center;
+
+    transform: translate(-50%, -50%);
+    /* Center both axes initially */
+    z-index: 1;
+    /* Behind the card */
+
+    opacity: 0;
+    white-space: nowrap;
+    /* Force single line */
+
+    /* Typography */
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 2.5rem;
+    /* Increased size */
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-white);
+
+    /* Animation Sequence */
+    animation: slideUpReveal 1s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.5s;
+}
+
+/* Continuous Animation (Breathing Glow) */
+.login-text-upward span {
+    display: inline-block;
+    animation: breathingGlow 3s ease-in-out infinite alternate;
+}
+
+/* Keyframes */
+
+/* Move from behind card to top */
+@keyframes slideUpReveal {
+    0% {
+        opacity: 0;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        top: 9%;
+        /* Relative position: 15% from top */
+        transform: translate(-50%, 0) scale(1);
+    }
+}
+
+/* Continuous Glow */
+@keyframes breathingGlow {
+    0% {
+        text-shadow: 0 0 5px rgba(229, 9, 20, 0.2);
+        color: #ffffff;
+        transform: scale(1);
+    }
+
+    100% {
+        text-shadow: 0 0 20px rgba(229, 9, 20, 0.8), 0 0 10px rgba(255, 255, 255, 0.5);
+        color: #ffcccc;
+        transform: scale(1.05);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .login-text-upward {
+        display: none;
+        /* Hide on mobile to save space */
+    }
+}

@@ -1,0 +1,147 @@
+{% extends "admin_base.html" %}
+{% block title %}Manage Subjects & Lectures{% endblock %}
+
+{% block content %}
+<style>
+    /* Local overrides for specific collapse behavior */
+    .lecture-list-container {
+        overflow: hidden;
+        transition: all 0.3s ease-out;
+        max-height: 2000px;
+        opacity: 1;
+    }
+
+    .lecture-list-container.hidden {
+        max-height: 0;
+        opacity: 0;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .toggle-icon {
+        transition: transform 0.3s;
+    }
+
+    .toggle-icon.rotated {
+        transform: rotate(-90deg);
+    }
+</style>
+
+<h1>Manage Subjects & Lectures</h1>
+
+<div class="card" style="margin-bottom: 30px;">
+    <h3 style="margin-bottom: 15px;">Add New Subject</h3>
+    <form method="post" action="{{ url_for('add_subject') }}" style="display: flex; gap: 10px; align-items: flex-end;">
+        <div style="flex-grow: 1;">
+            <label for="new_subject_name">Subject Name</label>
+            <input type="text" id="new_subject_name" name="name" required placeholder="e.g. Computer Science 101">
+        </div>
+        <button type="submit" class="btn btn-primary" style="height: 46px;">
+            <i class="fa-solid fa-plus"></i> Add Subject
+        </button>
+    </form>
+</div>
+
+<h2>Existing Subjects</h2>
+{% if subjects_data %}
+<div style="display: flex; flex-direction: column; gap: 15px;">
+    {% for subject in subjects_data %}
+    <div class="card" style="padding: 0; overflow: hidden;">
+
+        {# --- Subject Header --- #}
+        <div onclick="toggleLectures('list-{{ subject.id }}', 'icon-{{ subject.id }}')"
+            style="padding: 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background-color: var(--surface-color); border-bottom: 1px solid var(--border-color);">
+
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <i id="icon-{{ subject.id }}" class="fa-solid fa-chevron-down toggle-icon rotated"></i>
+                <div>
+                    <strong style="font-size: 1.2rem;">{{ subject.name }}</strong>
+                    <span class="text-muted" style="font-size: 0.9rem; margin-left: 10px;">ID: {{ subject.id }}</span>
+                </div>
+            </div>
+
+            <div class="actions-container" onclick="event.stopPropagation();"
+                style="display: flex; gap: 10px; align-items: center;">
+                <form method="post" action="{{ url_for('edit_subject', subject_id=subject.id) }}"
+                    style="display: flex; gap: 5px; margin: 0;">
+                    <input type="text" name="new_name" placeholder="Rename..." required
+                        style="padding: 6px 10px; font-size: 0.9rem; width: 150px;">
+                    <button type="submit" class="btn btn-outline btn-icon" title="Save Name">
+                        <i class="fa-solid fa-check"></i>
+                    </button>
+                </form>
+
+                <form method="post" action="{{ url_for('delete_subject', subject_id=subject.id) }}"
+                    onsubmit="return confirm('WARNING: Deleting this subject will also DELETE ALL its lectures. Are you sure?');"
+                    style="margin: 0;">
+                    <button type="submit" class="btn btn-outline btn-icon"
+                        style="color: var(--error-color); border-color: var(--error-color);" title="Delete Subject">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {# --- Lecture List --- #}
+        <div id="list-{{ subject.id }}" class="lecture-list-container hidden" style="background-color: #0f0f0f;">
+            {% if subject.lectures %}
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th style="padding-left: 40px;">Lecture Title</th>
+                        <th>Filename</th>
+                        <th style="text-align: right; padding-right: 30px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lecture in subject.lectures %}
+                    <tr>
+                        <td style="padding-left: 40px; font-weight: 500;">
+                            <i class="fa-regular fa-file-lines text-red" style="margin-right: 10px;"></i>
+                            {{ lecture['title'] }}
+                        </td>
+                        <td class="text-muted">{{ lecture['original_filename'] }}</td>
+                        <td style="text-align: right; padding-right: 30px;">
+                            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                                <a href="{{ url_for('user_view_file', filename=lecture['original_filename']) }}"
+                                    target="_blank" class="btn btn-outline btn-sm"
+                                    style="padding: 5px 10px; font-size: 0.8rem;">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                                <form method="post"
+                                    action="{{ url_for('delete_lecture', lecture_id=lecture['lecture_id']) }}"
+                                    onsubmit="return confirm('Delete lecture \'{{ lecture.title }}\'?');"
+                                    style="margin: 0;">
+                                    <button type="submit" class="btn btn-outline btn-sm"
+                                        style="padding: 5px 10px; font-size: 0.8rem; color: var(--error-color); border-color: var(--error-color);">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div style="padding: 30px; text-align: center; color: var(--text-muted); font-style: italic;">
+                No lectures uploaded for this subject yet.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert success">
+    <i class="fa-solid fa-arrow-up"></i> No subjects found. Add one above to get started!
+</div>
+{% endif %}
+
+<script>
+    function toggleLectures(listId, iconId) {
+        document.getElementById(listId).classList.toggle('hidden');
+        document.getElementById(iconId).classList.toggle('rotated');
+    }
+</script>
+{% endblock %}

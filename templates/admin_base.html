@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - {% block title %}{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="admin-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img src="{{ url_for('static', filename='images/favicon.png') }}" alt="Logo"
+                    style="width: 24px; height: 24px; vertical-align: middle; margin-right: 5px;">AI ADMIN
+            </div>
+
+            <nav class="nav-links">
+                <a href="{{ url_for('admin_dashboard') }}"
+                    class="nav-item {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                </a>
+                <a href="{{ url_for('manage_subjects') }}"
+                    class="nav-item {% if request.endpoint == 'manage_subjects' %}active{% endif %}">
+                    <i class="fa-solid fa-book"></i> Subjects
+                </a>
+                <a href="{{ url_for('upload_page') }}"
+                    class="nav-item {% if request.endpoint == 'upload_page' %}active{% endif %}">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload
+                </a>
+                <a href="{{ url_for('manage_users') }}"
+                    class="nav-item {% if request.endpoint == 'manage_users' %}active{% endif %}">
+                    <i class="fa-solid fa-users"></i> Users
+                </a>
+
+                <div style="border-top: 1px solid var(--border-color); margin: 10px 0;"></div>
+
+                <a href="{{ url_for('summarizer_dashboard') }}" class="nav-item">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Summarizer App
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="{{ url_for('logout') }}" class="nav-item">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content fade-in">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert-box {{ category }}">
+                <div class="alert-icon">
+                    {% if category == 'success' %}
+                    <i class="fa-solid fa-circle-check" style="color: var(--success-color); font-size: 1.5rem;"></i>
+                    {% else %}
+                    <i class="fa-solid fa-circle-exclamation" style="color: var(--error-color); font-size: 1.5rem;"></i>
+                    {% endif %}
+                </div>
+                <div class="alert-content">
+                    <div class="alert-title">
+                        {% if category == 'success' %}Success{% else %}Error{% endif %}
+                    </div>
+                    <div class="alert-message">{{ message }}</div>
+                </div>
+                <button class="alert-close" onclick="this.parentElement.remove()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    </div>
+    <script>
+        // Auto-dismiss alerts after 3 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert-box');
+                alerts.forEach(function(alert) {
+                    alert.style.transition = 'opacity 0.5s ease';
+                    alert.style.opacity = '0';
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 500); // Wait for transition to finish
+                });
+            }, 3000);
+        });
+    </script>
+</body>
+
+</html>

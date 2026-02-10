@@ -1,0 +1,25 @@
+{% extends "admin_base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 30px;">
+    <h1>Admin Dashboard</h1>
+    <p>Welcome to the Admin Panel. Use the navigation sidebar to manage content.</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+    <div class="card">
+        <h3 class="text-muted" style="font-size: 1rem; text-transform: uppercase;">Total Subjects</h3>
+        <div style="font-size: 3rem; font-weight: bold; color: var(--primary-red);">{{ subject_count }}</div>
+        <a href="{{ url_for('manage_subjects') }}" class="btn btn-outline" style="margin-top: 15px; width: 100%;">Manage
+            Subjects</a>
+    </div>
+
+    <div class="card">
+        <h3 class="text-muted" style="font-size: 1rem; text-transform: uppercase;">Total Lectures</h3>
+        <div style="font-size: 3rem; font-weight: bold; color: var(--text-main);">{{ lecture_count }}</div>
+        <a href="{{ url_for('upload_page') }}" class="btn btn-outline" style="margin-top: 15px; width: 100%;">Upload
+            New</a>
+    </div>
+</div>
+{% endblock %}
