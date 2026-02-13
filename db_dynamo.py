@@ -13,8 +13,27 @@ def get_dynamodb_resource():
     Returns a boto3 DynamoDB resource.
     Uses environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY automatically.
     """
+    # DEBUG: Check if keys exist (don't print values)
+    if not os.environ.get('AWS_ACCESS_KEY_ID'):
+        print("DEBUG: AWS_ACCESS_KEY_ID is MISSING from environment!", file=sys.stderr)
+    else:
+        print(f"DEBUG: AWS_ACCESS_KEY_ID found: {os.environ.get('AWS_ACCESS_KEY_ID')[:4]}***", file=sys.stderr)
+
     try:
-        return boto3.resource('dynamodb', region_name=AWS_REGION, endpoint_url=DYNAMO_ENDPOINT)
+        # Explicitly pass credentials if available (fixes some platform issues)
+        aws_access_key_id = os.environ.get('AWS_ACCESS_KEY_ID')
+        aws_secret_access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+        
+        if aws_access_key_id and aws_secret_access_key:
+             return boto3.resource(
+                'dynamodb', 
+                region_name=AWS_REGION, 
+                aws_access_key_id=aws_access_key_id,
+                aws_secret_access_key=aws_secret_access_key,
+                endpoint_url=DYNAMO_ENDPOINT
+            )
+        else:
+            return boto3.resource('dynamodb', region_name=AWS_REGION, endpoint_url=DYNAMO_ENDPOINT)
     except Exception as e:
         print(f"Error connecting to AWS DynamoDB: {e}", file=sys.stderr)
         return None
